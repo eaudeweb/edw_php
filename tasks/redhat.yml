@@ -1,0 +1,132 @@
+---
+- block:
+    - name: Import EPEL GPG Key
+      ansible.builtin.rpm_key:
+        key: "{{ epel['gpg_key_url'] }}"
+        state: present
+    - name: Install EPEL Repository
+      ansible.builtin.yum:
+        name: "{{ epel['repository_url'] }}"
+        state: latest
+  tags:
+    - packages
+
+- block:
+    - name: Import REMI GPG Key
+      ansible.builtin.rpm_key:
+        key: "{{ remi['gpg_key_url'] }}"
+        fingerprint: "{{ remi['gpg_key_fingerprint'] }}"
+        validate_certs: no
+        state: present
+    - name: Install REMI Repository
+      ansible.builtin.yum:
+        name: "{{ remi['repository_url'] }}"
+        state: latest
+  when: php_remi_repo_enabled|bool
+  tags:
+    - packages
+
+- block:
+    - name: Install Core Plugins for DNF
+      ansible.builtin.dnf:
+        name: dnf-plugins-core
+        state: latest
+    - name: Enable PowerTools Repository
+      command: dnf config-manager --set-enabled powertools
+  when: ansible_facts['distribution_major_version'] == '8'
+  tags:
+    - packages
+
+- name: Ensure PHP default packages are installed on RHEL and/or derivatives
+  ansible.builtin.yum:
+    name: "{{ php_default_packages }}"
+    state: present
+  tags:
+    - packages
+
+- name: Ensure PHP extra packages are installed on RHEL and/or derivatives
+  ansible.builtin.yum:
+    name: "{{ php_extra_packages }}"
+    state: present
+  tags:
+    - packages
+
+- name: Set default PHP settings
+  ansible.builtin.set_fact:
+    php_default_settings: "{{ php_default_settings|default([]) + append_default_settings }}"
+  tags:
+    - configuration
+
+- name: Apply default PHP settings
+  community.general.ini_file:
+    dest: "{{ php_ini_path }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value|default(omit) }}"
+    section: "{{ item.section }}"
+  with_items: "{{ php_default_settings }}"
+  when: php_apply_default|bool
+  notify:
+    - php-fpm-restart
+  tags:
+    - configuration
+
+- name: Apply specific PHP settings
+  community.general.ini_file:
+    dest: "{{ php_ini_path }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value|default(omit) }}"
+    section: "{{ item.section }}"
+  with_items: "{{ php_explicit_settings }}"
+  when: (php_explicit_settings is defined) and (php_explicit_settings|length > 0)
+  notify:
+    - php-fpm-restart
+  tags:
+    - configuration
+
+- name: Apply PHP-FPM settings
+  community.general.ini_file:
+    dest: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.conf' if php_remi_repo_enabled|bool else '/etc/php-fpm.conf' }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value|default(omit) }}"
+    section: "{{ item.section }}"
+  with_items: "{{ php_fpm_default_settings }}"
+  notify:
+    - php-fpm-restart
+  tags:
+    - configuration
+
+- name: Gather service facts
+  ansible.builtin.service_facts:
+  when: php_fpm_enable|bool
+  tags:
+    - configuration
+
+- name: Apply PHP-FPM pool settings
+  ansible.builtin.template:
+    src: "{{ 'pool-' + (php_version|string)[0] + '.j2' }}"
+    dest: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.d/' + item.name + '.conf' if php_remi_repo_enabled|bool else '/etc/php-fpm.d/' + item.name + '.conf' }}"
+    mode: 0644
+  with_items: "{{ php_fpm_pools }}"
+  when: php_fpm_enable|bool
+  notify:
+    - php-fpm-restart
+  tags:
+    - configuration
+
+- name: Start and enable PHP-FPM daemon on RHEL and derivatives
+  ansible.builtin.service:
+    name: "{{ php_fpm_service }}"
+    state: started
+    enabled: yes
+  when: php_fpm_enable|bool
+  tags:
+    - configuration
+
+- name: Set the default PHP version to be used on the system
+  community.general.alternatives:
+    link: /usr/bin/php
+    name: php
+    path: "/usr/bin/php{{ php_version | replace('.', '') }}"
+    priority: 10
+  tags:
+    - configuration

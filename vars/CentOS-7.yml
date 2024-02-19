@@ -1,0 +1,39 @@
+---
+remi:
+  gpg_key_url: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
+  gpg_key_fingerprint: "1EE0 4CCE 88A4 AE4A A29A  5DF5 004E 6F47 00F9 7F56"
+  repository_url: "http://rpms.remirepo.net/enterprise/remi-release-{{ ansible_facts['distribution_major_version'] }}.rpm"
+
+php_remi_repo_enabled: yes
+
+php_fpm_service: "{{ ('php' + php_version | replace('.', '') + '-php-fpm.service') if php_remi_repo_enabled|bool else 'php-fpm.service' }}"
+php_fpm_socket: "{{ ('/var/run/php' + php_version | replace('.', '') + '-php-fpm.sock') if php_remi_repo_enabled|bool else '/var/run/php-fpm.sock' }}"
+
+php_fpm_default_settings:
+  - { option: "pid", value: "{{ ('/var/opt/remi/php' + php_version | replace('.', '') + '/run/php-fpm/php-fpm.pid') if php_remi_repo_enabled|bool else '/var/run/php-fpm/php-fpm.pid' }}", section: "global" }
+  - { option: "error_log", value: "{{ ('/var/opt/remi/php' + php_version | replace('.', '') + '/log/php-fpm/error.log') if php_remi_repo_enabled|bool else '/var/log/php-fpm/error.log' }}", section: "global" }
+
+php_ini_path: "{{ ('/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini') if php_remi_repo_enabled|bool else '/etc/php.ini' }}"
+append_default_settings:
+  - { option: "session.save_path", value: "{{ '/var/opt/remi/php' + php_version | replace('.', '') + '/lib/php/session' if php_remi_repo_enabled|bool else '/tmp' }}", section: "Session" }
+
+php_default_packages:
+  - "{{ 'php' + php_version | replace('.', '') if php_remi_repo_enabled|bool else 'php' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-cli' if php_remi_repo_enabled|bool else 'php-cli' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-common' if php_remi_repo_enabled|bool else 'php-common' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-devel' if php_remi_repo_enabled|bool else 'php-devel' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-fpm' if php_remi_repo_enabled|bool else 'php-fpm' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-gd' if php_remi_repo_enabled|bool else 'php-gd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-imap' if php_remi_repo_enabled|bool else 'php-imap' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-intl' if php_remi_repo_enabled|bool else 'php-intl' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-ldap' if php_remi_repo_enabled|bool else 'php-ldap' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mbstring' if php_remi_repo_enabled|bool else 'php-mbstring' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mysqlnd' if php_remi_repo_enabled|bool else 'php-mysqlnd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-opcache' if php_remi_repo_enabled|bool else 'php' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pdo' if php_remi_repo_enabled|bool else 'php-pdo' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pear' if php_remi_repo_enabled|bool else 'php-pear' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-memcached' if php_remi_repo_enabled|bool else 'php-pecl-memcached' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-process' if php_remi_repo_enabled|bool else 'php-process' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-xml' if php_remi_repo_enabled|bool else 'php-xml' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' if php_remi_repo_enabled|bool else 'php' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-apcu' if php_remi_repo_enabled|bool else 'php-apcu' }}"

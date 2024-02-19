@@ -1,0 +1,62 @@
+---
+epel:
+  gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
+  repository_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+
+php_version: 7.4
+
+php_default_packages: []
+php_extra_packages: []
+
+# PHP-FPM configuration.
+php_fpm_enable: yes
+php_fpm_service: "php-fpm.service"
+php_fpm_socket: "/var/run/php-fpm.sock"
+php_fpm_tcp_socket: yes
+php_fpm_port: 9000
+
+php_fpm_pools:
+  - name: "www"
+    listen: {
+      address: "{% if php_fpm_tcp_socket|bool %}127.0.0.1:{{ php_fpm_port }}{% else %}{{ php_fpm_socket }}{% endif %}",
+      mode: "0660",
+      allowed_clients: "127.0.0.1",
+    }
+    pm: {
+      mode: "dynamic",
+      max_children: 50,
+      start_servers: 10,
+      min_spare_servers: 10,
+      max_spare_servers: 20,
+      process_idle_timeout: "10s",
+      max_requests: 500,
+    }
+
+# The executable to run when calling PHP from the command line.
+php_executable: "php"
+
+php_apply_default: yes
+php_ini_path: "/etc/php.ini"
+php_default_settings:
+  - { option: "expose_php", value: "Off", section: "PHP" }
+  - { option: "memory_limit", value: "512M", section: "PHP" }
+  - { option: "max_execution_time", value: "180", section: "PHP" }
+  - { option: "max_input_time", value: "60", section: "PHP" }
+  - { option: "max_input_vars", value: "10000", section: "PHP" }
+  - { option: "realpath_cache_size", value: "4096k", section: "PHP" }
+  - { option: "file_uploads", value: "On", section: "PHP" }
+  - { option: "post_max_size", value: "200M", section: "PHP" }
+  - { option: "upload_max_filesize", value: "200M", section: "PHP" }
+  - { option: "max_file_uploads", value: "20", section: "PHP" }
+  - { option: "allow_url_fopen", value: "On", section: "PHP" }
+  - { option: "error_reporting", value: "E_ALL & ~E_DEPRECATED & ~E_STRICT", section: "PHP" }
+  - { option: "display_errors", value: "Off", section: "PHP" }
+  - { option: "display_startup_errors", value: "Off", section: "PHP" }
+  - { option: "error_log", value: "syslog", section: "PHP" }
+  - { option: "assert.active", value: "On", section: "Assertion" }
+  - { option: "date.timezone", value: "UTC", section: "Date" }
+  - { option: "mail.add_x_header", value: "0", section: "mail function" }
+
+php_explicit_settings: []
+
+php_upgrade: no
