@@ -1,62 +1,80 @@
 ---
-epel:
-  gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
-  repository_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+# INSTALLATION
+php_version: 8.2
 
-php_version: 7.4
+php_default_packages:
+  - "{{ 'php' + php_version | replace('.', '') }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-cli' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-common' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-devel' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-gd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-intl' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mbstring' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mysqlnd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pdo' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pear' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-uuid' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-yaml' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-tidy' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-xml' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-runtime' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-imagick' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-opcache' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-memcached' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mcrypt' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mysql' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-igbinary' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-process' }}"
 
-php_default_packages: []
 php_extra_packages: []
 
-# PHP-FPM configuration.
-php_fpm_enable: yes
-php_fpm_service: "php-fpm.service"
-php_fpm_socket: "/var/run/php-fpm.sock"
-php_fpm_tcp_socket: yes
-php_fpm_port: 9000
-
-php_fpm_pools:
-  - name: "www"
-    listen: {
-      address: "{% if php_fpm_tcp_socket|bool %}127.0.0.1:{{ php_fpm_port }}{% else %}{{ php_fpm_socket }}{% endif %}",
-      mode: "0660",
-      allowed_clients: "127.0.0.1",
-    }
-    pm: {
-      mode: "dynamic",
-      max_children: 50,
-      start_servers: 10,
-      min_spare_servers: 10,
-      max_spare_servers: 20,
-      process_idle_timeout: "10s",
-      max_requests: 500,
-    }
-
-# The executable to run when calling PHP from the command line.
-php_executable: "php"
-
-php_apply_default: yes
-php_ini_path: "/etc/php.ini"
+# PHP.INI
+apply_php_default_settings: true
+php_ini_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini'}}"
 php_default_settings:
-  - { option: "expose_php", value: "Off", section: "PHP" }
-  - { option: "memory_limit", value: "512M", section: "PHP" }
-  - { option: "max_execution_time", value: "180", section: "PHP" }
-  - { option: "max_input_time", value: "60", section: "PHP" }
-  - { option: "max_input_vars", value: "10000", section: "PHP" }
-  - { option: "realpath_cache_size", value: "4096k", section: "PHP" }
-  - { option: "file_uploads", value: "On", section: "PHP" }
-  - { option: "post_max_size", value: "200M", section: "PHP" }
-  - { option: "upload_max_filesize", value: "200M", section: "PHP" }
-  - { option: "max_file_uploads", value: "20", section: "PHP" }
-  - { option: "allow_url_fopen", value: "On", section: "PHP" }
-  - { option: "error_reporting", value: "E_ALL & ~E_DEPRECATED & ~E_STRICT", section: "PHP" }
-  - { option: "display_errors", value: "Off", section: "PHP" }
-  - { option: "display_startup_errors", value: "Off", section: "PHP" }
-  - { option: "error_log", value: "syslog", section: "PHP" }
-  - { option: "assert.active", value: "On", section: "Assertion" }
-  - { option: "date.timezone", value: "UTC", section: "Date" }
-  - { option: "mail.add_x_header", value: "0", section: "mail function" }
+    - { regexp: '^allow_url_fopen =', line: 'allow_url_fopen = On' }  
+    - { regexp: '^assert.active =', line: 'assert.active = On' }  
+    - { regexp: '^date.timezone =', line: 'date.timezone = UTC' }  
+    - { regexp: '^display_errors =', line: 'display_errors = Off' }  
+    - { regexp: '^display_startup_errors =', line: 'display_startup_errors = Off' }  
+    - { regexp: '^error_log =', line: 'error_log = syslog' }  
+    - { regexp: '^expose_php =', line: 'expose_php = Off' }  
+    - { regexp: '^file_uploads =', line: 'file_uploads = On' }  
+    - { regexp: '^mail.add_x_header =', line: 'mail.add_x_header = 0' }  
+    - { regexp: '^max_execution_time =', line: 'max_execution_time = 180' }  
+    - { regexp: '^max_file_uploads =', line: 'max_file_uploads = 20' }  
+    - { regexp: '^max_input_time =', line: 'max_input_time = 60' }
+    - { regexp: '^max_input_vars =', line: 'max_input_vars = 10000' }  
+    - { regexp: '^memory_limit =', line: 'memory_limit = 512M' }  
+    - { regexp: '^post_max_size =', line: 'post_max_size = 200M' }  
+    - { regexp: '^realpath_cache_size =', line: 'realpath_cache_size = 4096k' }  
+    - { regexp: '^upload_max_filesize =', line: 'upload_max_filesize = 200M' }  
 
-php_explicit_settings: []
+php_extra_settings: []
 
-php_upgrade: no
+# PHP-FPM
+
+apply_php_default_pool: true
+php_pool_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php-fpm.d/www.conf'}}"
+
+listen_path: "{{ '/var/run/php' + php_version | replace('.', '') + '-php-fpm.sock' }}"
+
+php_default_pool:
+    - { regexp: '^user =', line: 'user = nginx' }  
+    - { regexp: '^group =', line: 'group = nginx' }  
+    - { regexp: '^listen =', line: 'listen = {{ listen_path }}' }  
+    - { regexp: '^listen.owner =', line: 'listen.owner = nginx' }  
+    - { regexp: '^listen.group =', line: 'listen.group = nginx' }  
+    - { regexp: '^listen.mode =', line: 'listen.mode = 0660' }  
+    - { regexp: '^pm.max_children =', line: 'pm.max_children = 50' }  
+    - { regexp: '^pm.start_servers =', line: 'pm.start_servers = 10' }  
+    - { regexp: '^pm.min_spare_servers =', line: 'pm.min_spare_servers = 10' }  
+    - { regexp: '^pm.max_spare_servers =', line: 'pm.max_spare_servers = 20' }  
+    - { regexp: '^pm.max_requests =', line: 'pm.max_requests = 500' }
+
+php_pool: []
+
+php_fpm_service: "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
+php_fpm_enable: true 

@@ -9,20 +9,13 @@
         - "../vars/{{ ansible_facts['distribution'] }}.yml"
         - "../vars/{{ ansible_facts['os_family'] }}.yml"
       skip: yes
-  tags:
-    - php
-    - configuration
 
-- name: Remove older php versions
-  ansible.builtin.include_tasks: remove.yml
-  when: php_upgrade|bool
-  tags:
-    - php
-    - configuration
+# - name: Remove older php versions
+#   ansible.builtin.include_tasks: remove.yml
+#   when: php_upgrade|bool
+#   tags:
+#     - php
+#     - configuration
 
-- name: Include Red Hat specific tasks file
-  ansible.builtin.include_tasks: redhat.yml
-  when: ansible_facts['os_family'] == 'RedHat'
-  tags:
-    - php
-    - configuration
+- name: Include OS specific tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
