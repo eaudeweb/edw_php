@@ -4,7 +4,7 @@ Installs PHP and configure php.ini and php pool on CentOS 7 and 9 servers.
 
 ## Templates
 
-The templates used are the default ones when installing php with remi ()`see templates/`).
+The templates used are the default ones when installing php with remi (`see templates/`).
 
 ## Variables
 
