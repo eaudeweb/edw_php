@@ -31,39 +31,21 @@
     name: "{{ php_extra_packages }}"
     state: present
 
-- name: Apply default PHP settings (php.ini)
-  ansible.builtin.lineinfile:
-    path: "{{ php_ini_path }}" 
-    regexp: "{{ item.regexp }}"  
-    line: "{{ item.line }}"  
-    state: "{{ item.state | default('present') }}" 
-  with_items: "{{ php_default_settings }}"
-  when: apply_php_default_settings|bool
+- name: Configure PHP INI settings
+  ansible.builtin.template:
+    src: php.ini.j2
+    dest: "{{ php_ini_path }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ php_ini_settings }}"
 
-- name: Apply custom PHP settings
-  ansible.builtin.lineinfile:
-    path: "{{ php_ini_path }}" 
-    regexp: "{{ item.regexp }}"  
-    line: "{{ item.line }}"  
-    state: "{{ item.state | default('present') }}" 
-  with_items: "{{ php_extra_settings }}"
-
-- name: Apply PHP default pool settings
-  ansible.builtin.lineinfile:
-    path: "{{ php_pool_path }}" 
-    regexp: "{{ item.regexp }}"  
-    line: "{{ item.line }}"  
-    state: "{{ item.state | default('present') }}" 
-  with_items: "{{ php_default_pool }}"
-  when: (apply_php_default_pool|bool) and (php_fpm_enable|bool)
-
-- name: Apply custom PHP default pool settings
-  ansible.builtin.lineinfile:
-    path: "{{ php_pool_path }}" 
-    regexp: "{{ item.regexp }}"  
-    line: "{{ item.line }}"  
-    state: "{{ item.state | default('present') }}" 
-  with_items: "{{ php_pool }}"
+- name: Apply PHP-FPM pool settings
+  ansible.builtin.template:
+    src: pool.conf.j2
+    dest: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.d/' + item.name + '.conf' }}"
+    mode: 0644
+  with_items: "{{ php_fpm_pools }}"
   when: php_fpm_enable|bool
 
 - name: Start and enable PHP-FPM daemon

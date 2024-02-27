@@ -10,12 +10,5 @@
         - "../vars/{{ ansible_facts['os_family'] }}.yml"
       skip: yes
 
-# - name: Remove older php versions
-#   ansible.builtin.include_tasks: remove.yml
-#   when: php_upgrade|bool
-#   tags:
-#     - php
-#     - configuration
-
 - name: Include OS specific tasks
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"

@@ -30,51 +30,42 @@ php_default_packages:
 
 php_extra_packages: []
 
-# PHP.INI
-apply_php_default_settings: true
+# PHP INI Settings
 php_ini_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini'}}"
-php_default_settings:
-    - { regexp: '^allow_url_fopen =', line: 'allow_url_fopen = On' }  
-    - { regexp: '^assert.active =', line: 'assert.active = On' }  
-    - { regexp: '^date.timezone =', line: 'date.timezone = UTC' }  
-    - { regexp: '^display_errors =', line: 'display_errors = Off' }  
-    - { regexp: '^display_startup_errors =', line: 'display_startup_errors = Off' }  
-    - { regexp: '^error_log =', line: 'error_log = syslog' }  
-    - { regexp: '^expose_php =', line: 'expose_php = Off' }  
-    - { regexp: '^file_uploads =', line: 'file_uploads = On' }  
-    - { regexp: '^mail.add_x_header =', line: 'mail.add_x_header = 0' }  
-    - { regexp: '^max_execution_time =', line: 'max_execution_time = 180' }  
-    - { regexp: '^max_file_uploads =', line: 'max_file_uploads = 20' }  
-    - { regexp: '^max_input_time =', line: 'max_input_time = 60' }
-    - { regexp: '^max_input_vars =', line: 'max_input_vars = 10000' }  
-    - { regexp: '^memory_limit =', line: 'memory_limit = 512M' }  
-    - { regexp: '^post_max_size =', line: 'post_max_size = 200M' }  
-    - { regexp: '^realpath_cache_size =', line: 'realpath_cache_size = 4096k' }  
-    - { regexp: '^upload_max_filesize =', line: 'upload_max_filesize = 200M' }  
 
-php_extra_settings: []
+php_ini_settings: 
+  - allow_url_fopen: "On"
+    assert_active: "On"  # sau -1  # assert.active
+    date_timezone: "UTC" # date.timezone
+    display_errors: "Off"
+    display_startup_errors: "Off"
+    error_log: "syslog"
+    expose_php: "Off"
+    file_uploads: "On"
+    mail_add_x_header: "0" # mail.add_x_header
+    max_execution_time: "180"
+    max_file_uploads: "20"
+    max_input_time: "60"
+    max_input_vars: "10000"
+    memory_limit: "512M"
+    post_max_size: "200M"
+    realpath_cache_size: "4096k"
+    upload_max_filesize: "200M"
 
-# PHP-FPM
-
-apply_php_default_pool: true
-php_pool_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php-fpm.d/www.conf'}}"
-
-listen_path: "{{ '/var/run/php' + php_version | replace('.', '') + '-php-fpm.sock' }}"
-
-php_default_pool:
-    - { regexp: '^user =', line: 'user = nginx' }  
-    - { regexp: '^group =', line: 'group = nginx' }  
-    - { regexp: '^listen =', line: 'listen = {{ listen_path }}' }  
-    - { regexp: '^listen.owner =', line: 'listen.owner = nginx' }  
-    - { regexp: '^listen.group =', line: 'listen.group = nginx' }  
-    - { regexp: '^listen.mode =', line: 'listen.mode = 0660' }  
-    - { regexp: '^pm.max_children =', line: 'pm.max_children = 50' }  
-    - { regexp: '^pm.start_servers =', line: 'pm.start_servers = 10' }  
-    - { regexp: '^pm.min_spare_servers =', line: 'pm.min_spare_servers = 10' }  
-    - { regexp: '^pm.max_spare_servers =', line: 'pm.max_spare_servers = 20' }  
-    - { regexp: '^pm.max_requests =', line: 'pm.max_requests = 500' }
-
-php_pool: []
-
+# PHP FPM POOL Settings
 php_fpm_service: "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
 php_fpm_enable: true 
+
+php_fpm_pools:
+  - name: "www"
+    user: nginx
+    group: nginx
+    listen: "{{ '/var/run/php' + php_version | replace('.', '') + '-php-fpm.sock' }}"
+    listen_owner: nginx # listen.owner
+    listen_group: nginx # lsiten.group
+    listen_mode: 0660 # listen.mode
+    pm_max_children: 50 # pm.max_children
+    pm_start_servers: 10 # pm.start_servers
+    pm_min_spare_servers: 10 # pm.min_spare_servers
+    pm_max_spare_servers: 20 # pm.max_spare_servers
+    pm_max_requests: 500 # pm.max_requests
