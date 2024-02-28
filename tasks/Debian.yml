@@ -18,34 +18,3 @@
     name: "{{ php_extra_packages }}"
     state: present
   
-- name: Apply default PHP settings
-  community.general.ini_file:
-    dest: "{{ php_ini_path }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value|default(omit) }}"
-    section: "{{ item.section }}"
-  with_items: "{{ php_default_settings }}"
-
-- name: Apply specific PHP settings
-  community.general.ini_file:
-    dest: "{{ php_ini_path }}"
-    option: "{{ item.option }}"
-    value: "{{ item.value|default(omit) }}"
-    section: "{{ item.section }}"
-  with_items: "{{ php_custom_settings }}"
-  when: (php_custom_settings is defined) and (php_custom_settings|length > 0)
-
-- name: Apply PHP-FPM pool settings
-  ansible.builtin.template:
-    src: pool.conf-Debian.j2
-    dest: "{{ '/etc/php/' + php_version|string + '/fpm/pool.d/' + item.name + '.conf' }}"
-    mode: 0644
-  with_items: "{{ php_fpm_pools }}"
-  when: php_fpm_enable|bool
-
-- name: Start and enable PHP-FPM daemon
-  ansible.builtin.service:
-    name: "{{ php_fpm_service }}"
-    state: started
-    enabled: yes
-  when: php_fpm_enable|bool
