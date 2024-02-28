@@ -17,7 +17,7 @@ php_default_settings:
   - { option: "display_errors", value: "Off", section: "PHP" }
   - { option: "display_startup_errors", value: "Off", section: "PHP" }
   - { option: "error_log", value: "syslog", section: "PHP" }
-  - { option: "assert.active", value: "On", section: "Assertion" }
+  - { option: "assert.active", value: "Off", section: "Assertion" }
   - { option: "date.timezone", value: "UTC", section: "Date" }
   - { option: "mail.add_x_header", value: "0", section: "mail function" }
 
