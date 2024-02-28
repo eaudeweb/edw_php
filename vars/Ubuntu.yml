@@ -1,0 +1,26 @@
+php_default_packages:
+  - "{{ 'php' + php_version | string }}"
+  - "{{ 'php' + php_version | string + '-cli' }}"
+  - "{{ 'php' + php_version | string + '-common' }}"
+  - "{{ 'php' + php_version | string + '-dev' }}"
+  - "{{ 'php' + php_version | string + '-fpm' }}"
+  - "{{ 'php' + php_version | string + '-gd' }}"
+  - "{{ 'php' + php_version | string + '-intl' }}"
+  - "{{ 'php' + php_version | string + '-mbstring' }}"
+  - "{{ 'php' + php_version | string + '-mysql' }}"
+  - "{{ 'php' + php_version | string + '-uuid' }}"
+  - "{{ 'php' + php_version | string + '-yaml' }}"
+  - "{{ 'php' + php_version | string + '-tidy' }}"
+  - "{{ 'php' + php_version | string + '-xml' }}"
+  - "{{ 'php' + php_version | string + '-imagick' }}"
+  - "{{ 'php' + php_version | string + '-opcache' }}"
+  - "{{ 'php' + php_version | string + '-memcached' }}"
+  - "{{ 'php' + php_version | string + '-zip' }}"
+  - "{{ 'php' + php_version | string + '-igbinary' }}"
+
+php_extra_packages: []
+
+php_ini_path: "{{ '/etc/php/' + php_version | string + '/cli/php.ini'}}"
+# php_ini_path: "{{ '/etc/php' + php_version | string + '/fpm/php.ini'}}"
+
+php_fpm_service: "{{ 'php' + php_version | string + '-fpm' }}"

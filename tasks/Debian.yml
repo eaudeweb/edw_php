@@ -1,36 +1,23 @@
 ---
-- name: Import EPEL GPG Key
-  ansible.builtin.rpm_key:
-    key: "{{ epel['gpg_key_url'] }}"
+- name: Add specified repository into sources list
+  ansible.builtin.apt_repository:
+    repo: 'ppa:ondrej/php'
     state: present
 
-- name: Install EPEL Repository
-  ansible.builtin.yum:
-    name: "{{ epel['repository_url'] }}"
-    state: latest
-
-- name: Import REMI GPG Key
-  ansible.builtin.rpm_key:
-    key: "{{ remi['gpg_key_url'] }}"
-    fingerprint: "{{ remi['gpg_key_fingerprint'] }}"
-    validate_certs: no
-    state: present
-
-- name: Install REMI Repository
-  ansible.builtin.yum:
-    name: "{{ remi['repository_url'] }}"
-    state: latest
+- name: Update apt package cache
+  ansible.builtin.apt:
+    update_cache: yes
 
 - name: Ensure PHP default packages are installed
-  ansible.builtin.yum:
+  ansible.builtin.apt:
     name: "{{ php_default_packages }}"
     state: present
 
 - name: Ensure PHP extra packages are installed
-  ansible.builtin.yum:
+  ansible.builtin.apt:
     name: "{{ php_extra_packages }}"
     state: present
-
+  
 - name: Apply default PHP settings
   community.general.ini_file:
     dest: "{{ php_ini_path }}"
@@ -50,8 +37,8 @@
 
 - name: Apply PHP-FPM pool settings
   ansible.builtin.template:
-    src: pool.conf-RedHat.j2
-    dest: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.d/' + item.name + '.conf' }}"
+    src: pool.conf-Debian.j2
+    dest: "{{ '/etc/php/' + php_version|string + '/fpm/pool.d/' + item.name + '.conf' }}"
     mode: 0644
   with_items: "{{ php_fpm_pools }}"
   when: php_fpm_enable|bool

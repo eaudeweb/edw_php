@@ -4,7 +4,7 @@ Installs PHP and configure php.ini and php pool on CentOS 7 and 9 servers.
 
 ## Templates
 
-The templates used are the default ones when installing php with remi (`see templates/`).
+The templates used are the default ones when installing php with remi ()`see templates/`).
 
 ## Variables
 
@@ -18,34 +18,10 @@ php_version: 8.2
 ```
 Default php version is 8.2, but the value can be overwritten from host_vars.
 
-A list of the PHP packages to install is already declared.
+A list of the PHP packages to install is already declared `see vars/`.
 
 ```
-php_default_packages:
-  - "{{ 'php' + php_version | replace('.', '') }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-cli' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-common' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-devel' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-gd' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-intl' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-mbstring' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-mysqlnd' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pdo' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pear' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-uuid' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-yaml' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-tidy' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-xml' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-runtime' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-imagick' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-opcache' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-memcached' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mcrypt' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mysql' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-igbinary' }}"
-  - "{{ 'php' + php_version | replace('.', '') + '-php-process' }}"
+php_default_packages: []
 ```
 
 You can add other packages you'd like (in host_vars):
@@ -56,36 +32,40 @@ php_extra_packages: []
 
 ### Configuration php.ini
 
+See `vars`
 ```
-php_ini_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini'}}"
-```
-by default `/etc/opt/remi/php82/php.ini`
-
-These variables will be replaced in the php.ini template (templates/php.ini.j2)
-
-```
-php_ini_settings: 
-  - allow_url_fopen: "On"
-    assert_active: "On"  # sau -1  # assert.active
-    date_timezone: "UTC" # date.timezone
-    display_errors: "Off"
-    display_startup_errors: "Off"
-    error_log: "syslog"
-    expose_php: "Off"
-    file_uploads: "On"
-    mail_add_x_header: "0" # mail.add_x_header
-    max_execution_time: "180"
-    max_file_uploads: "20"
-    max_input_time: "60"
-    max_input_vars: "10000"
-    memory_limit: "512M"
-    post_max_size: "200M"
-    realpath_cache_size: "4096k"
-    upload_max_filesize: "200M"
+php_ini_path:
 ```
 
-if you want to modify one of the variables, you must copy the
-entire given list and update it in host_vars.
+These variables will be replaced in the php.ini file that exists on
+the server at `php_ini_path`
+
+```
+php_default_settings:
+  - { option: "expose_php", value: "Off", section: "PHP" }
+  - { option: "memory_limit", value: "512M", section: "PHP" }
+  - { option: "max_execution_time", value: "180", section: "PHP" }
+  - { option: "max_input_time", value: "60", section: "PHP" }
+  - { option: "max_input_vars", value: "10000", section: "PHP" }
+  - { option: "realpath_cache_size", value: "4096k", section: "PHP" }
+  - { option: "file_uploads", value: "On", section: "PHP" }
+  - { option: "post_max_size", value: "200M", section: "PHP" }
+  - { option: "upload_max_filesize", value: "200M", section: "PHP" }
+  - { option: "max_file_uploads", value: "20", section: "PHP" }
+  - { option: "allow_url_fopen", value: "On", section: "PHP" }
+  - { option: "display_errors", value: "Off", section: "PHP" }
+  - { option: "display_startup_errors", value: "Off", section: "PHP" }
+  - { option: "error_log", value: "syslog", section: "PHP" }
+  - { option: "assert.active", value: "On", section: "Assertion" }
+  - { option: "date.timezone", value: "UTC", section: "Date" }
+  - { option: "mail.add_x_header", value: "0", section: "mail function" }
+```
+
+If you want to override or add others variables, use:
+
+```
+php_custom_settings: []
+```
 
 ### PHP-FPM (php pool)
 
@@ -97,11 +77,13 @@ the `php_fpm_service` will not be started and enabled.
 php_fpm_enable: true 
 ```
 
+See `vars`:
+
 ```
-php_fpm_service: "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
+php_fpm_service: 
 ```
 
-These variables will be replaced in the pool template (templates/pool.conf.j2)
+These variables will be replaced in the pool template (templates/pool.conf-Distribution.j2)
 
 ```
 php_fpm_pools:

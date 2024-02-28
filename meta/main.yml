@@ -1,20 +1,20 @@
 galaxy_info:
-  author: Andrei Buzoianu
+  author: Catalina Sindrilaru, Cristian Romanescu, Andrei Buzoianu
   description: Ansible role to install and configure PHP
   company: Eau de Web
 
-  issue_tracker_url: https://helpdesk.eaudeweb.ro
+  issue_tracker_url: https://github.com/eaudeweb/edw_php/issues
   license: BSD-3-Clause
-  min_ansible_version: 2.9
+  min_ansible_version: "2.9"
 
   platforms:
-   - name: EL
-     versions:
-     - 7
-     - 8
-   - name: FreeBSD
-     versions:
-     - 12.2
+    - name: EL
+      versions:
+      - "7"
+      - "9"
+    - name: Ubuntu
+      versions:
+      - "all"
 
   galaxy_tags:
     - development
