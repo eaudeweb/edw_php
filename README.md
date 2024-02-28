@@ -1,6 +1,11 @@
 # Ansible Role for PHP
 
-Installs PHP and configure php.ini and php pool on CentOS 7 and 9 servers.
+Installs PHP and configure php.ini and php pool on CentOS 7, 9 and Ubuntu servers.
+
+Used:
+
+* https://rpms.remirepo.net/
+* https://launchpad.net/~ondrej/+archive/ubuntu/php
 
 ## Templates
 
