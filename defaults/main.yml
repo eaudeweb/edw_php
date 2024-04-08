@@ -33,7 +33,7 @@ php_fpm_pools:
     listen: "{{ '/var/run/php' + php_version | replace('.', '') + '-php-fpm.sock' }}"
     listen_owner: nginx # listen.owner
     listen_group: nginx # lsiten.group
-    listen_mode: 0660 # listen.mode
+    listen_mode: '0660' # listen.mode
     pm_max_children: 50 # pm.max_children
     pm_start_servers: 10 # pm.start_servers
     pm_min_spare_servers: 10 # pm.min_spare_servers
