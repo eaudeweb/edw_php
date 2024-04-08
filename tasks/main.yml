@@ -8,7 +8,6 @@
         - "../vars/{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_release'] }}.yml"
         - "../vars/{{ ansible_facts['distribution'] }}.yml"
         - "../vars/{{ ansible_facts['os_family'] }}.yml"
-        - "../vars/{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
       skip: yes
 
 - name: Include OS specific tasks
