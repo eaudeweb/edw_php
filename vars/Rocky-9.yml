@@ -1,0 +1,42 @@
+---
+epel:
+  gpg_key_url: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}"
+  repository_url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+
+remi:
+  gpg_key_url: "https://rpms.remirepo.net/RPM-GPG-KEY-remi2021"
+  gpg_key_fingerprint: "B1AB F71E 14C9 D748 97E1 98A8 B195 27F1 478F 8947"
+  repository_url: "http://rpms.remirepo.net/enterprise/remi-release-9.rpm"
+
+php_default_packages:
+  - "{{ 'php' + php_version | replace('.', '') }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-cli' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-common' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-devel' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-gd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-intl' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mbstring' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-mysqlnd' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pdo' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pear' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-uuid' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-yaml' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-tidy' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-xml' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-runtime' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-imagick' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-opcache' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-memcached' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mcrypt' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-mysql' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-igbinary' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-process' }}"
+
+php_extra_packages: []
+
+php_ini_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini'}}"
+php_pool_path: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.d/'}}"
+
+php_fpm_service: "{{ 'php' + php_version | replace('.', '') + '-php-fpm' }}"
