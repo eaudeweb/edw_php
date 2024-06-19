@@ -12,11 +12,9 @@ php_default_packages:
   - "{{ 'php' + php_version | string + '-yaml' }}"
   - "{{ 'php' + php_version | string + '-tidy' }}"
   - "{{ 'php' + php_version | string + '-xml' }}"
-  # - "{{ 'php' + php_version | string + '-imagick' }}"
-  - "{{ 'php-imagick' }}"
+  - "{{ 'php' + php_version | string + '-imagick' }}"
   - "{{ 'php' + php_version | string + '-opcache' }}"
-  # - "{{ 'php' + php_version | string + '-memcached' }}"
-  - "{{ 'php-memcached' }}"
+  - "{{ 'php' + php_version | string + '-memcached' }}"
   - "{{ 'php' + php_version | string + '-zip' }}"
   - "{{ 'php' + php_version | string + '-igbinary' }}"
 
