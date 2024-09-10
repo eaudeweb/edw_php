@@ -38,6 +38,15 @@
   with_items: "{{ php_fpm_pools }}"
   when: php_fpm_enable|bool
 
+- name: Apply php-fpm.conf settings
+  community.general.ini_file:
+    dest: "{{ php_fpm_default_conf_path }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value|default(omit) }}"
+    section: "{{ item.section }}"
+  with_items: "{{ php_fpm_settings }}"
+  when: php_fpm_enable|bool
+
 - name: Start and enable PHP-FPM daemon
   ansible.builtin.service:
     name: "{{ php_fpm_service }}"

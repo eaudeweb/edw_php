@@ -39,3 +39,7 @@ php_fpm_pools:
     pm_min_spare_servers: 10 # pm.min_spare_servers
     pm_max_spare_servers: 20 # pm.max_spare_servers
     pm_max_requests: 500 # pm.max_requests
+
+# php-fpm.conf settings
+php_fpm_settings:
+  - { option: "error_log", value: "syslog", section: "global" }

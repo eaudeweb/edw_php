@@ -24,5 +24,6 @@ php_extra_packages: []
 # php_ini_path: "{{ '/etc/php/' + php_version | string + '/cli/php.ini'}}"
 php_ini_path: "{{ '/etc/php/' + php_version | string + '/fpm/php.ini'}}"
 php_pool_path: "{{ '/etc/php/' + php_version|string + '/fpm/pool.d/'}}"
+php_fpm_default_conf_path: "{{ '/etc/php/' + php_version|string + '/fpm/php-fpm.conf'}}"
 
 php_fpm_service: "{{ 'php' + php_version | string + '-fpm' }}"
