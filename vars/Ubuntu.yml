@@ -17,6 +17,7 @@ php_default_packages:
   - "{{ 'php' + php_version | string + '-memcached' }}"
   - "{{ 'php' + php_version | string + '-zip' }}"
   - "{{ 'php' + php_version | string + '-igbinary' }}"
+  - "{{ 'php' + php_version | string + '-curl' }}"
 
 php_extra_packages: []
 

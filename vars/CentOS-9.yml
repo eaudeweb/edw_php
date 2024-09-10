@@ -33,6 +33,7 @@ php_default_packages:
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-igbinary' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-process' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-curl' }}"
 
 php_extra_packages: []
 
