@@ -36,6 +36,9 @@ php_default_packages:
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-zip' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-igbinary' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-process' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-apcu' }}"
+  - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-redis' }}"
+  - "MariaDB-client"
 
 php_extra_packages: []
 

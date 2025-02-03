@@ -18,6 +18,10 @@ php_default_packages:
   - "{{ 'php' + php_version | string + '-zip' }}"
   - "{{ 'php' + php_version | string + '-igbinary' }}"
   - "{{ 'php' + php_version | string + '-curl' }}"
+  - "{{ 'php' + php_version | string + '-redis' }}"
+  - "{{ 'php' + php_version | string + '-apcu' }}"
+  - "mariadb-client"
+
 
 php_extra_packages: []
 
