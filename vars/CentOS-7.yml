@@ -36,7 +36,7 @@ php_default_packages:
   - "{{ 'php' + php_version | replace('.', '') + '-php-curl' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-apcu' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-redis' }}"
-  - "MariaDB-client"
+  - "ImageMagick"
 
 php_extra_packages: []
 
