@@ -47,9 +47,9 @@
   with_items: "{{ php_fpm_settings }}"
   when: php_fpm_enable|bool
 
-- name: Start and enable PHP-FPM daemon
+- name: Restart and enable PHP-FPM daemon
   ansible.builtin.service:
     name: "{{ php_fpm_service }}"
-    state: started
+    state: restarted
     enabled: yes
   when: php_fpm_enable|bool
