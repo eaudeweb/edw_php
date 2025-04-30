@@ -1,11 +1,15 @@
 ---
-- name: Add specified repository into sources list
-  ansible.builtin.apt_repository:
-    repo: 'ppa:ondrej/php'
+- name: Add Ondřej Surý PHP PPA GPG key
+  apt_key:
+    url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB8DC7E53946656EFBCE4C1DD71DAEAAB4AD4CAB6"
+    keyring: /usr/share/keyrings/ondrej-php.gpg
     state: present
 
-- name: Update apt package cache
-  ansible.builtin.apt:
+- name: Add ondrej/php PPA repository securely
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/ondrej-php.gpg] http://ppa.launchpad.net/ondrej/php/ubuntu {{ ansible_distribution_release }} main"
+    filename: ondrej-php
+    state: present
     update_cache: yes
 
 - name: Ensure PHP default packages are installed
