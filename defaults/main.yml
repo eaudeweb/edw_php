@@ -23,6 +23,8 @@ php_default_settings:
 
 php_custom_settings: []
 
+php_extra_packages: []
+
 # PHP FPM POOL Settings
 php_fpm_enable: true 
 
