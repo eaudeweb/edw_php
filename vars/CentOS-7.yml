@@ -37,6 +37,7 @@ php_default_packages:
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-apcu' }}"
   - "{{ 'php' + php_version | replace('.', '') + '-php-pecl-redis' }}"
   - "ImageMagick"
+  - "MariaDB-client"
 
 php_ini_path: "{{ '/etc/opt/remi/php' + php_version | replace('.', '') + '/php.ini'}}"
 php_pool_path: "{{ '/etc/opt/remi/php' + php_version|replace('.', '') + '/php-fpm.d/'}}"
